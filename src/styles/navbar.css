@@ -1,0 +1,28 @@
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 12px 20px;
+  color: rgb(0, 0, 0);
+  border-bottom: 1px solid rgb(235, 234, 234);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.app-name {
+  font-size: 20px;
+  font-weight: bold;
+  text-decoration: none;
+  color: white;
+}
+
+.login-icon {
+  color: #4b95a2;
+  transition: color 0.3s ease;
+}
+
+.login-icon:hover {
+  color: #4b95a2;
+}
