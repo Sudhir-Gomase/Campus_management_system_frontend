@@ -12,5 +12,8 @@ export const API_ENDPOINTS = {
   companylist: "companylist",
   overallcompanydata: "overallcompanydata",
   donutCount: "/donutgraphdata?department_id=",
+  downloadtemplate: "/downloadtemplate",
+  registerbulkemployee: "/registerbulkemployee/",
+  deleteStudent: "/deletestudent/",
 };
 

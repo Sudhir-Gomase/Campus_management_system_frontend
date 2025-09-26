@@ -20,7 +20,7 @@ apis.interceptors.request.use(
 apis.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401 && window.location.pathname !== "/login") {
+    if (error.response?.status === 402 && window.location.pathname !== "/login") {
       localStorage.removeItem("accessToken");
       message.error("Session expired. Please log in again.");
       setTimeout(() => {

@@ -47,7 +47,7 @@ function Dashboard() {
 
       dispatch(fetchAcademicYearData(queryParams))
     }
-  }, [selectYear, selectedCompany, selectedDepartment, selectedStatus])
+  }, [dispatch, selectYear, selectedCompany, selectedDepartment, selectedStatus])
 
   const columns = [
     {

@@ -6,7 +6,7 @@ import { fetchOverAllCompanyDataList, updateStatusOfCompany } from "../redux/sli
 
 function Company() {
   const dispatch = useDispatch()
-  const [selectedStatus, setSelectedStatus] = useState(null)
+  const [selectedStatus, setSelectedStatus] = useState('approved')
   const [companyId, setCompanyId] = useState(null)
   const [approvedValue, setApprovedValue] = useState(null)
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -20,7 +20,7 @@ function Company() {
       queryParams += '?is_approved=false'
     }
     dispatch(fetchOverAllCompanyDataList(queryParams))
-  }, [dispatch, selectedStatus])
+  }, [dispatch, selectedStatus, approvedValue])
 
   const columns = [
     {

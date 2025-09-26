@@ -2,6 +2,7 @@ import Dashboard from "./Dashboard";
 import Company from "./Company";
 import Students from "./Students";
 import PrivateRoute from "./PrivateRoutes";
+import Account from "./Account";
 
 export const routes = [
   {
@@ -25,6 +26,14 @@ export const routes = [
     element:
       <PrivateRoute>
         <Company />
+      </PrivateRoute>
+    ,
+  },
+  {
+    path: "/account",
+    element:
+      <PrivateRoute>
+        <Account />
       </PrivateRoute>
     ,
   },

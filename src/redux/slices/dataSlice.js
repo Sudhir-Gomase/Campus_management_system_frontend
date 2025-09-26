@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import apis from "../apis";
 import { API_ENDPOINTS, METHOD_TYPE } from "../apiUrls";
+import { data } from "react-router-dom";
 
 
 const initialState = {
@@ -22,7 +23,7 @@ export const loginRequest = createAsyncThunk("color/loginRequest", async (reques
       data: requestedData
     };
     const response = await apis(data);
-    return response?.data;
+    return response?.data?.data;
   } catch (error) {
     throw error.response.data.message;
   }
@@ -36,7 +37,7 @@ export const fetchDepartmentList = createAsyncThunk("color/fetchDepartmentList",
       url: API_ENDPOINTS.department,
     };
     const response = await apis(data);
-    return response?.data;
+    return response?.data?.data;
   } catch (error) {
     throw error.response.data.message;
   }
@@ -50,7 +51,7 @@ export const fetchIndividualDepartment = createAsyncThunk("color/fetchIndividual
       url: API_ENDPOINTS.department + `?id=${id}`,
     };
     const response = await apis(data);
-    return response?.data;
+    return response?.data?.data;
   } catch (error) {
     throw error.response.data.message;
   }
@@ -64,7 +65,7 @@ export const fetchDountCount = createAsyncThunk("color/fetchDountCount", async (
       url: API_ENDPOINTS.donutCount + id,
     };
     const response = await apis(data);
-    return response?.data;
+    return response?.data?.data;
   } catch (error) {
     throw error.response.data.message;
   }
@@ -78,7 +79,7 @@ export const fetchAcademicYearData = createAsyncThunk("color/fetchAcademicYearDa
       url: API_ENDPOINTS.academicyeardata + queryParams,
     };
     const response = await apis(data);
-    return response?.data;
+    return response?.data?.data;
   } catch (error) {
     throw error.response.data.message;
   }
@@ -92,7 +93,7 @@ export const fetchCompanyDataList = createAsyncThunk("color/fetchCompanyDataList
       url: API_ENDPOINTS.companylist,
     };
     const response = await apis(data);
-    return response?.data;
+    return response?.data?.data;
   } catch (error) {
     throw error.response.data.message;
   }
@@ -106,7 +107,7 @@ export const fetchOverAllCompanyDataList = createAsyncThunk("color/fetchOverAllC
       url: API_ENDPOINTS.overallcompanydata + queryParams,
     };
     const response = await apis(data);
-    return response?.data;
+    return response?.data?.data;
   } catch (error) {
     throw error.response.data.message;
   }
@@ -120,12 +121,60 @@ export const updateStatusOfCompany = createAsyncThunk("color/updateStatusOfCompa
       url: API_ENDPOINTS.overallcompanydata + queryParams,
     };
     const response = await apis(data);
+    return response?.data?.data;
+  } catch (error) {
+    throw error.response.data.message;
+  }
+}
+);
+
+export const downloadStudentTemplate = createAsyncThunk("color/downloadStudentTemplate", async (queryParams) => {
+  try {
+    const data = {
+      method: METHOD_TYPE.get,
+      url: API_ENDPOINTS.downloadtemplate,
+    };
+    const response = await apis(data);
     return response?.data;
   } catch (error) {
     throw error.response.data.message;
   }
 }
 );
+
+export const registerBulkEmployee = createAsyncThunk("color/registerBulkEmployee", async (requestedData) => {
+  const { departmentId, file } = requestedData
+  try {
+    const data = {
+      method: METHOD_TYPE.post,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      url: API_ENDPOINTS.registerbulkemployee + departmentId,
+      data: file
+    };
+    const response = await apis(data);
+    return response?.data;
+  } catch (error) {
+    throw error.response.data.message;
+  }
+}
+);
+
+export const deleteStudent = createAsyncThunk("color/deleteStudent", async (studentId) => {
+  try {
+    const data = {
+      method: METHOD_TYPE.delete,
+      url: API_ENDPOINTS.deleteStudent + studentId,
+    };
+    const response = await apis(data);
+    return response?.data;
+  } catch (error) {
+    throw error.response.data.message;
+  }
+}
+);
+
 
 const dataSlice = createSlice({
   name: "dataSlice",
@@ -187,7 +236,10 @@ const dataSlice = createSlice({
           action.type === fetchOverAllCompanyDataList.rejected.type ||
           action.type === updateStatusOfCompany.pending.type ||
           action.type === updateStatusOfCompany.fulfilled.type ||
-          action.type === updateStatusOfCompany.rejected.type,
+          action.type === updateStatusOfCompany.rejected.type ||
+          action.type === downloadStudentTemplate.pending.type ||
+          action.type === downloadStudentTemplate.fulfilled.type ||
+          action.type === downloadStudentTemplate.rejected.type,
         handleLoading
       )
   },

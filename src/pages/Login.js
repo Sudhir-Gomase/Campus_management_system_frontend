@@ -20,6 +20,7 @@ function Login() {
       message.success('Login success')
       localStorage.setItem('accessToken', res?.token)
       localStorage.setItem('userName', res?.name)
+      localStorage.setItem('userdetails', JSON.stringify(res))
       navigate('/')
     })
   };
