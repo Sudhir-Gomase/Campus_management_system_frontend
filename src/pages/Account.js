@@ -19,7 +19,7 @@ const Account = () => {
                 phone: userDetails?.phone || "",
             });
         }
-    }, [userDetails]);
+    }, [userDetails?.name, userDetails?.email, userDetails?.phone]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;

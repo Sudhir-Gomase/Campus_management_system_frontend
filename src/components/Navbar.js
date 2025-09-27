@@ -1,7 +1,6 @@
 
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaSignInAlt } from "react-icons/fa"; // Login icon
 import "../styles/navbar.css";
 import {
   LogoutOutlined,

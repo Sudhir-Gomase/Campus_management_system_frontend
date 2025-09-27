@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import apis from "../apis";
 import { API_ENDPOINTS, METHOD_TYPE } from "../apiUrls";
-import { data } from "react-router-dom";
 
 
 const initialState = {
@@ -11,26 +10,30 @@ const initialState = {
   academicYearData: [],
   companyListData: [],
   overAllCompanyListData: [],
+  overAllCompanyForStudentListData: [],
+  singleStudentData: {},
+  studentOnGoingProcessData: [],
   isLoading: false,
   error: null,
 };
 
-export const loginRequest = createAsyncThunk("color/loginRequest", async (requestedData) => {
+export const loginRequest = createAsyncThunk("campus/loginRequest", async (requestedData) => {
+  const url = requestedData?.type === 'admin' ? API_ENDPOINTS.adminLogin : API_ENDPOINTS.studentLogin
   try {
     const data = {
       method: METHOD_TYPE.post,
-      url: API_ENDPOINTS.login,
+      url: url,
       data: requestedData
     };
     const response = await apis(data);
     return response?.data?.data;
   } catch (error) {
-    throw error.response.data.message;
+    throw error.response;
   }
 }
 );
 
-export const fetchDepartmentList = createAsyncThunk("color/fetchDepartmentList", async () => {
+export const fetchDepartmentList = createAsyncThunk("campus/fetchDepartmentList", async () => {
   try {
     const data = {
       method: METHOD_TYPE.get,
@@ -44,7 +47,7 @@ export const fetchDepartmentList = createAsyncThunk("color/fetchDepartmentList",
 }
 );
 
-export const fetchIndividualDepartment = createAsyncThunk("color/fetchIndividualDepartment", async (id) => {
+export const fetchIndividualDepartment = createAsyncThunk("campus/fetchIndividualDepartment", async (id) => {
   try {
     const data = {
       method: METHOD_TYPE.get,
@@ -58,7 +61,7 @@ export const fetchIndividualDepartment = createAsyncThunk("color/fetchIndividual
 }
 );
 
-export const fetchDountCount = createAsyncThunk("color/fetchDountCount", async (id) => {
+export const fetchDountCount = createAsyncThunk("campus/fetchDountCount", async (id) => {
   try {
     const data = {
       method: METHOD_TYPE.get,
@@ -72,7 +75,7 @@ export const fetchDountCount = createAsyncThunk("color/fetchDountCount", async (
 }
 );
 
-export const fetchAcademicYearData = createAsyncThunk("color/fetchAcademicYearData", async (queryParams) => {
+export const fetchAcademicYearData = createAsyncThunk("campus/fetchAcademicYearData", async (queryParams) => {
   try {
     const data = {
       method: METHOD_TYPE.get,
@@ -86,7 +89,7 @@ export const fetchAcademicYearData = createAsyncThunk("color/fetchAcademicYearDa
 }
 );
 
-export const fetchCompanyDataList = createAsyncThunk("color/fetchCompanyDataList", async () => {
+export const fetchCompanyDataList = createAsyncThunk("campus/fetchCompanyDataList", async () => {
   try {
     const data = {
       method: METHOD_TYPE.get,
@@ -100,7 +103,7 @@ export const fetchCompanyDataList = createAsyncThunk("color/fetchCompanyDataList
 }
 );
 
-export const fetchOverAllCompanyDataList = createAsyncThunk("color/fetchOverAllCompanyDataList", async (queryParams) => {
+export const fetchOverAllCompanyDataList = createAsyncThunk("campus/fetchOverAllCompanyDataList", async (queryParams) => {
   try {
     const data = {
       method: METHOD_TYPE.get,
@@ -114,7 +117,7 @@ export const fetchOverAllCompanyDataList = createAsyncThunk("color/fetchOverAllC
 }
 );
 
-export const updateStatusOfCompany = createAsyncThunk("color/updateStatusOfCompany", async (queryParams) => {
+export const updateStatusOfCompany = createAsyncThunk("campus/updateStatusOfCompany", async (queryParams) => {
   try {
     const data = {
       method: METHOD_TYPE.put,
@@ -128,7 +131,7 @@ export const updateStatusOfCompany = createAsyncThunk("color/updateStatusOfCompa
 }
 );
 
-export const downloadStudentTemplate = createAsyncThunk("color/downloadStudentTemplate", async (queryParams) => {
+export const downloadStudentTemplate = createAsyncThunk("campus/downloadStudentTemplate", async (queryParams) => {
   try {
     const data = {
       method: METHOD_TYPE.get,
@@ -142,7 +145,7 @@ export const downloadStudentTemplate = createAsyncThunk("color/downloadStudentTe
 }
 );
 
-export const registerBulkEmployee = createAsyncThunk("color/registerBulkEmployee", async (requestedData) => {
+export const registerBulkEmployee = createAsyncThunk("campus/registerBulkEmployee", async (requestedData) => {
   const { departmentId, file } = requestedData
   try {
     const data = {
@@ -161,7 +164,7 @@ export const registerBulkEmployee = createAsyncThunk("color/registerBulkEmployee
 }
 );
 
-export const deleteStudent = createAsyncThunk("color/deleteStudent", async (studentId) => {
+export const deleteStudent = createAsyncThunk("campus/deleteStudent", async (studentId) => {
   try {
     const data = {
       method: METHOD_TYPE.delete,
@@ -169,6 +172,64 @@ export const deleteStudent = createAsyncThunk("color/deleteStudent", async (stud
     };
     const response = await apis(data);
     return response?.data;
+  } catch (error) {
+    throw error.response.data.message;
+  }
+}
+);
+
+
+export const fetchOverAllCompanyForStudent = createAsyncThunk("campus/fetchOverAllCompanyForStudent", async (queryParams) => {
+  try {
+    const data = {
+      method: METHOD_TYPE.get,
+      url: API_ENDPOINTS.allcompanylistforstudent + queryParams,
+    };
+    const response = await apis(data);
+    return response?.data?.data;
+  } catch (error) {
+    throw error.response.data.message;
+  }
+}
+);
+
+export const fetchSingleStudentData = createAsyncThunk("campus/fetchSingleStudentData", async (id) => {
+  try {
+    const data = {
+      method: METHOD_TYPE.get,
+      url: API_ENDPOINTS.studentdata + id,
+    };
+    const response = await apis(data);
+    return response?.data?.data?.studentData;
+  } catch (error) {
+    throw error.response.data.message;
+  }
+}
+);
+
+export const updateStudentFrom = createAsyncThunk("campus/updateStudentFrom", async (requestedData) => {
+  try {
+    const data = {
+      method: METHOD_TYPE.post,
+      url: API_ENDPOINTS.studentprofileupdate,
+      data: requestedData
+    };
+    const response = await apis(data);
+    return response?.data?.data;
+  } catch (error) {
+    throw error.response.data.message;
+  }
+}
+);
+
+export const studentOnGoingProcess = createAsyncThunk("campus/studentOnGoingProcess", async (queryParams) => {
+  try {
+    const data = {
+      method: METHOD_TYPE.get,
+      url: API_ENDPOINTS.ongoingprocess + queryParams,
+    };
+    const response = await apis(data);
+    return response?.data?.data;
   } catch (error) {
     throw error.response.data.message;
   }
@@ -211,6 +272,15 @@ const dataSlice = createSlice({
       .addCase(fetchOverAllCompanyDataList.fulfilled, (state, action) => {
         state.overAllCompanyListData = action.payload;
       })
+      .addCase(fetchOverAllCompanyForStudent.fulfilled, (state, action) => {
+        state.overAllCompanyForStudentListData = action.payload;
+      })
+      .addCase(fetchSingleStudentData.fulfilled, (state, action) => {
+        state.singleStudentData = action.payload;
+      })
+      .addCase(studentOnGoingProcess.fulfilled, (state, action) => {
+        state.studentOnGoingProcessData = action.payload;
+      })
       .addMatcher(
         (action) =>
           action.type === loginRequest.pending.type ||
@@ -239,7 +309,19 @@ const dataSlice = createSlice({
           action.type === updateStatusOfCompany.rejected.type ||
           action.type === downloadStudentTemplate.pending.type ||
           action.type === downloadStudentTemplate.fulfilled.type ||
-          action.type === downloadStudentTemplate.rejected.type,
+          action.type === downloadStudentTemplate.rejected.type ||
+          action.type === fetchOverAllCompanyForStudent.pending.type ||
+          action.type === fetchOverAllCompanyForStudent.fulfilled.type ||
+          action.type === fetchOverAllCompanyForStudent.rejected.type ||
+          action.type === updateStudentFrom.pending.type ||
+          action.type === updateStudentFrom.fulfilled.type ||
+          action.type === updateStudentFrom.rejected.type ||
+          action.type === fetchSingleStudentData.pending.type ||
+          action.type === fetchSingleStudentData.fulfilled.type ||
+          action.type === fetchSingleStudentData.rejected.type ||
+          action.type === studentOnGoingProcess.pending.type ||
+          action.type === studentOnGoingProcess.fulfilled.type ||
+          action.type === studentOnGoingProcess.rejected.type,
         handleLoading
       )
   },

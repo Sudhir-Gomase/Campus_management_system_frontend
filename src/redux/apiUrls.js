@@ -6,7 +6,8 @@ export const METHOD_TYPE = {
 };
 
 export const API_ENDPOINTS = {
-  login: "adminlogin",
+  adminLogin: "adminlogin",
+  studentLogin: "studentlogin",
   department: "departments",
   academicyeardata: "academicyeardata",
   companylist: "companylist",
@@ -15,5 +16,9 @@ export const API_ENDPOINTS = {
   downloadtemplate: "/downloadtemplate",
   registerbulkemployee: "/registerbulkemployee/",
   deleteStudent: "/deletestudent/",
+  allcompanylistforstudent: "/allcompanylistforstudent/",
+  studentdata: "/studentdata/",
+  studentprofileupdate: "/studentprofileupdate",
+  ongoingprocess: "/ongoingprocess/",
 };
 
