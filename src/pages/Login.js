@@ -9,6 +9,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [selectedType, setSelectedType] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -23,13 +24,13 @@ function Login() {
       localStorage.setItem('userName', res?.name)
       localStorage.setItem('userdetails', JSON.stringify(res))
       localStorage.setItem('loginType', res?.role)
-      if(res?.role === 'student'){
+      if (res?.role === 'student') {
         navigate('/student-dashboard')
-      } else {  
-      navigate('/')
+      } else {
+        navigate('/')
       }
     }).catch((error) => {
-      message.error(error?.error ?? 'Failed to Login')
+      message.error(error?.message ?? 'Failed to Login')
     })
   };
 
@@ -84,23 +85,39 @@ function Login() {
               />
             </div>
 
-            <div className="input-group">
+            <div className="input-group" style={{ position: "relative" }}>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                style={{ paddingRight: 40 }}
               />
+              <span
+                onClick={() => setShowPassword((prev) => !prev)}
+                style={{
+                  position: "absolute",
+                  right: 12,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  cursor: "pointer",
+                  fontSize: 18,
+                  color: "#4b95a2"
+                }}
+                title={showPassword ? "Hide Password" : "Show Password"}
+              >
+                {showPassword ? "🙈" : "👁️"}
+              </span>
             </div>
 
             <button type="submit" className="btn">Login</button>
           </form>
         )}
 
-        <p className="signup-link">
+        {/* <p className="signup-link">
           Don’t have an account? <a href="/signup">Sign Up</a>
-        </p>
+        </p> */}
       </div>
     </div>
   );

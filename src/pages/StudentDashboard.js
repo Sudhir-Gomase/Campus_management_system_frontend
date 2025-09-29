@@ -2,13 +2,11 @@
 import React, { useEffect, useState } from "react";
 import { message, Select, Table } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchOverAllCompanyForStudent, fetchSingleStudentData } from "../redux/slices/dataSlice";
+import { fetchOverAllCompanyForStudent, fetchSingleStudentData, studentAppliedCompany } from "../redux/slices/dataSlice";
 
 function StudentDashboard() {
     const dispatch = useDispatch()
-    const [companyId, setCompanyId] = useState(null)
     const [selectedStatus, setSelectedStatus] = useState('approved')
-    const [isModalVisible, setIsModalVisible] = useState(false)
     const { overAllCompanyForStudentListData } = useSelector((state) => state?.dataSlice);
 
     const userDetails = JSON.parse(localStorage.getItem("userdetails"));
@@ -18,6 +16,14 @@ function StudentDashboard() {
         dispatch(fetchSingleStudentData(userDetails?.studentId))
     }, [userDetails?.studentId, dispatch])
 
+    const handleApplyClicked = (company_id) => {
+        dispatch(studentAppliedCompany({ student_id: userDetails?.studentId, company_id })).unwrap().then((res) => {
+            message.success('Applied successfully')
+            dispatch(fetchOverAllCompanyForStudent(userDetails?.studentId))
+        }).catch((error) => {
+            message.error(error?.message ?? 'Failed to apply')
+        })
+    }
 
     const columns = [
         {
@@ -60,13 +66,12 @@ function StudentDashboard() {
             key: "action",
             width: 150,
             render: (_, record) => (
-                <div onClick={() => { setIsModalVisible(true); setCompanyId(record?.company_id) }} style={{ display: "flex", gap: "8px", cursor: 'pointer', color: '#4b95a2', textDecoration: 'underline' }}>
+                <div onClick={() => handleApplyClicked(record?.company_id)} style={{ display: "flex", gap: "8px", cursor: 'pointer', color: '#4b95a2', textDecoration: 'underline' }}>
                     Apply
                 </div>
             ),
         },
     ];
-
     const statusOptions = [
         { value: "applied", label: "Applied" },
         { value: "shortlisted", label: "Shortlisted" },

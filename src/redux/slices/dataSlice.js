@@ -28,6 +28,22 @@ export const loginRequest = createAsyncThunk("campus/loginRequest", async (reque
     const response = await apis(data);
     return response?.data?.data;
   } catch (error) {
+    throw error.response?.data?.error;
+  }
+}
+);
+
+export const changePassword = createAsyncThunk("campus/loginRequest", async (requestedData) => {
+  const url = requestedData?.type === 'admin' ? `/admin/${API_ENDPOINTS.changepassword}` : requestedData?.type === 'student' ? `/student/${API_ENDPOINTS.changepassword}` : `/company/${API_ENDPOINTS.changepassword}`
+  try {
+    const data = {
+      method: METHOD_TYPE.put,
+      url: url,
+      data: requestedData
+    };
+    const response = await apis(data);
+    return response?.data?.data;
+  } catch (error) {
     throw error.response;
   }
 }
@@ -236,6 +252,37 @@ export const studentOnGoingProcess = createAsyncThunk("campus/studentOnGoingProc
 }
 );
 
+export const studentAppliedCompany = createAsyncThunk("campus/studentOnGoingProcess", async (requestedData) => {
+  try {
+    const data = {
+      method: METHOD_TYPE.post,
+      url: API_ENDPOINTS.studentapplied,
+      data: requestedData
+    };
+    const response = await apis(data);
+    return response?.data?.data;
+  } catch (error) {
+    throw error.response?.data?.error;
+  }
+}
+);
+
+export const adminDataUpdate = createAsyncThunk("campus/adminDataUpdate", async ({ id, requestedData }) => {
+  console.log('requestedData-==============', requestedData)
+  try {
+    const data = {
+      method: METHOD_TYPE.post,
+      url: API_ENDPOINTS.admindataupdate + id,
+      data: requestedData
+    };
+    const response = await apis(data);
+    return response?.data?.data;
+  } catch (error) {
+    throw error.response?.data?.error;
+  }
+}
+);
+
 
 const dataSlice = createSlice({
   name: "dataSlice",
@@ -319,9 +366,15 @@ const dataSlice = createSlice({
           action.type === fetchSingleStudentData.pending.type ||
           action.type === fetchSingleStudentData.fulfilled.type ||
           action.type === fetchSingleStudentData.rejected.type ||
+          action.type === studentAppliedCompany.pending.type ||
+          action.type === studentAppliedCompany.fulfilled.type ||
+          action.type === studentAppliedCompany.rejected.type ||
           action.type === studentOnGoingProcess.pending.type ||
           action.type === studentOnGoingProcess.fulfilled.type ||
-          action.type === studentOnGoingProcess.rejected.type,
+          action.type === studentOnGoingProcess.rejected.type ||
+          action.type === adminDataUpdate.pending.type ||
+          action.type === adminDataUpdate.fulfilled.type ||
+          action.type === adminDataUpdate.rejected.type,
         handleLoading
       )
   },
