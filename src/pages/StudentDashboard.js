@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { message, Select, Table } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchOverAllCompanyForStudent, fetchSingleStudentData, studentAppliedCompany } from "../redux/slices/dataSlice";
+import { fetchOverAllCompanyForStudent, fetchSingleStudentData, getNotification, studentAppliedCompany } from "../redux/slices/dataSlice";
 
 function StudentDashboard() {
     const dispatch = useDispatch()
@@ -14,6 +14,7 @@ function StudentDashboard() {
     useEffect(() => {
         dispatch(fetchOverAllCompanyForStudent(userDetails?.studentId))
         dispatch(fetchSingleStudentData(userDetails?.studentId))
+        dispatch(getNotification({id:userDetails?.studentId}))
     }, [userDetails?.studentId, dispatch])
 
     const handleApplyClicked = (company_id) => {

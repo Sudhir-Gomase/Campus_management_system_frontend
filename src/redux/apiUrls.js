@@ -23,5 +23,6 @@ export const API_ENDPOINTS = {
   ongoingprocess: "ongoingprocess/",
   studentapplied: "studentapplied",
   admindataupdate: "admindataupdate/",
+  getnotification: "getnotification/",
 };
 

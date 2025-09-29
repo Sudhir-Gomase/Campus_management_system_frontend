@@ -6,6 +6,7 @@ import Account from "./Account";
 import StudentDashboard from "./StudentDashboard";
 import UpdateStudentForm from "./UpdateStudentForm";
 import StudentOngoingProcess from "./StudentOngoingProcess";
+import Notification from "./Notification";
 
 export const routes = [
   {
@@ -61,6 +62,14 @@ export const routes = [
     element:
       <PrivateRoute>
         <StudentOngoingProcess />
+      </PrivateRoute>
+    ,
+  },
+  {
+    path: "/notification",
+    element:
+      <PrivateRoute>
+        <Notification />
       </PrivateRoute>
     ,
   },

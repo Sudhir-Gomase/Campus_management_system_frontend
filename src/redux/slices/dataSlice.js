@@ -13,12 +13,14 @@ const initialState = {
   overAllCompanyForStudentListData: [],
   singleStudentData: {},
   studentOnGoingProcessData: [],
+  getNotificationData: [],
+  getNotificationDataId: [],
   isLoading: false,
   error: null,
 };
 
 export const loginRequest = createAsyncThunk("campus/loginRequest", async (requestedData) => {
-  const url = requestedData?.type === 'admin' ? API_ENDPOINTS.adminLogin : API_ENDPOINTS.studentLogin
+  const url = requestedData?.type === 'admin' ? API_ENDPOINTS.adminLogin : requestedData?.type === 'student' ? API_ENDPOINTS.studentLogin : API_ENDPOINTS.companyLogin
   try {
     const data = {
       method: METHOD_TYPE.post,
@@ -238,6 +240,34 @@ export const updateStudentFrom = createAsyncThunk("campus/updateStudentFrom", as
 }
 );
 
+export const getNotification = createAsyncThunk("campus/getNotification", async (requestedData) => {
+  try {
+    const data = {
+      method: METHOD_TYPE.get,
+      url: API_ENDPOINTS.getnotification + requestedData.id
+    };
+    const response = await apis(data);
+    return response?.data?.data?.notifications;
+  } catch (error) {
+    throw error.response.data.message;
+  }
+}
+);
+
+export const getNotificationById = createAsyncThunk("campus/getNotificationById", async (requestedData) => {
+  try {
+    const data = {
+      method: METHOD_TYPE.get,
+      url: API_ENDPOINTS.getnotification + requestedData.id + (requestedData.companyId ? `?companyId=${requestedData.companyId}` : ''),
+    };
+    const response = await apis(data);
+    return response?.data?.data?.notifications;
+  } catch (error) {
+    throw error.response.data.message;
+  }
+}
+);
+
 export const studentOnGoingProcess = createAsyncThunk("campus/studentOnGoingProcess", async (queryParams) => {
   try {
     const data = {
@@ -268,7 +298,6 @@ export const studentAppliedCompany = createAsyncThunk("campus/studentOnGoingProc
 );
 
 export const adminDataUpdate = createAsyncThunk("campus/adminDataUpdate", async ({ id, requestedData }) => {
-  console.log('requestedData-==============', requestedData)
   try {
     const data = {
       method: METHOD_TYPE.post,
@@ -290,6 +319,9 @@ const dataSlice = createSlice({
   reducers: {
     clearDountChart: (state) => {
       state.dountChart = {};
+    },
+    clearNotificationById: (state) => {
+      state.getNotificationDataId = [];
     }
   },
   extraReducers: (builder) => {
@@ -327,6 +359,12 @@ const dataSlice = createSlice({
       })
       .addCase(studentOnGoingProcess.fulfilled, (state, action) => {
         state.studentOnGoingProcessData = action.payload;
+      })
+      .addCase(getNotification.fulfilled, (state, action) => {
+        state.getNotificationData = action.payload;
+      })
+      .addCase(getNotificationById.fulfilled, (state, action) => {
+        state.getNotificationDataId = action.payload;
       })
       .addMatcher(
         (action) =>
@@ -374,11 +412,17 @@ const dataSlice = createSlice({
           action.type === studentOnGoingProcess.rejected.type ||
           action.type === adminDataUpdate.pending.type ||
           action.type === adminDataUpdate.fulfilled.type ||
-          action.type === adminDataUpdate.rejected.type,
+          action.type === adminDataUpdate.rejected.type ||
+          action.type === getNotification.pending.type ||
+          action.type === getNotification.fulfilled.type ||
+          action.type === getNotification.rejected.type ||
+          action.type === getNotificationById.pending.type ||
+          action.type === getNotificationById.fulfilled.type ||
+          action.type === getNotificationById.rejected.type,
         handleLoading
       )
   },
 });
 
-export const { clearDountChart } = dataSlice.actions;
+export const { clearDountChart, clearNotificationById } = dataSlice.actions;
 export default dataSlice.reducer;
