@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/login.css";
-import { Input, message, Modal } from "antd";
+import { Input, message, Modal, Select } from "antd";
 import { useDispatch } from "react-redux";
 import { companyRegistration, loginRequest } from "../redux/slices/dataSlice";
 
@@ -190,11 +190,17 @@ function Login() {
               value={registerData.contact_phone}
               onChange={handleRegisterChange}
             />
-            <Input
+            <Select
               name="offer_type"
-              placeholder="Offer Type"
-              value={registerData.offer_type}
-              onChange={handleRegisterChange}
+              placeholder="Select Offer Type"
+              value={registerData.offer_type || null}
+              onChange={value => setRegisterData(prev => ({ ...prev, offer_type: value }))}
+              options={[
+                { value: "Internship", label: "Internship" },
+                { value: "Full-Time", label: "Full-Time" },
+                { value: "Intern+PPO", label: "Intern+PPO" }
+              ]}
+              style={{ width: "100%" }}
             />
             <Input.TextArea
               name="description"

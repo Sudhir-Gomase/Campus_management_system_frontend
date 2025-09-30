@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getCompanyDetails, updateCompanyDetails } from "../redux/slices/dataSlice";
-import { message } from "antd";
+import { message, Select } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 
 function CompanyDetails() {
@@ -8,33 +8,33 @@ function CompanyDetails() {
     const userDetails = JSON.parse(localStorage.getItem("userdetails"));
     const { getCompanyDetailsById: initialData } = useSelector((state) => state?.dataSlice);
     const [form, setForm] = useState({
-        name: "",
-        description: "",
-        contact_email: "",
-        contact_phone: "",
-        ctc_offered: "",
-        interview_process: "",
-        mode_of_interview: "",
-        platforms: "",
-        website_url: "",
-        industry_type: "",
-        company_size: "",
-        headquarters_location: "",
-        establishment_year: "",
-        min_qualification: "",
-        min_marks_10th: "",
-        min_marks_12th: "",
-        min_marks_ug: "",
-        min_marks_pg: "",
-        max_backlogs_allowed: "",
-        gap_years_allowed: "",
-        offer_type: "",
-        joining_date: "",
-        bond_details: "",
-        selection_rounds: "",
-        benefits: "",
-        preferred_skills: "",
-        preferred_locations: "",
+        name: null,
+        description: null,
+        contact_email: null,
+        contact_phone: null,
+        ctc_offered: null,
+        interview_process: null,
+        mode_of_interview: null,
+        platforms: null,
+        website_url: null,
+        industry_type: null,
+        company_size: null,
+        headquarters_location: null,
+        establishment_year: null,
+        min_qualification: null,
+        min_marks_10th: null,
+        min_marks_12th: null,
+        min_marks_ug: null,
+        min_marks_pg: null,
+        max_backlogs_allowed: null,
+        gap_years_allowed: null,
+        offer_type: null,
+        joining_date: null,
+        bond_details: null,
+        selection_rounds: null,
+        benefits: null,
+        preferred_skills: null,
+        preferred_locations: null,
     });
     useEffect(() => {
         dispatch(getCompanyDetails(userDetails?.companyId));
@@ -43,33 +43,33 @@ function CompanyDetails() {
     useEffect(() => {
         if (initialData && Object.keys(initialData).length > 0) {
             setForm({
-                name: initialData.name || "",
-                description: initialData.description || "",
-                contact_email: initialData.contact_email || "",
-                contact_phone: initialData.contact_phone || "",
-                ctc_offered: initialData.ctc_offered || "",
-                interview_process: initialData.interview_process || "",
-                mode_of_interview: initialData.mode_of_interview || "",
-                platforms: initialData.platforms || "",
-                website_url: initialData.website_url || "",
-                industry_type: initialData.industry_type || "",
-                company_size: initialData.company_size || "",
-                headquarters_location: initialData.headquarters_location || "",
-                establishment_year: initialData.establishment_year || "",
-                min_qualification: initialData.min_qualification || "",
-                min_marks_10th: initialData.min_marks_10th || "",
-                min_marks_12th: initialData.min_marks_12th || "",
-                min_marks_ug: initialData.min_marks_ug || "",
-                min_marks_pg: initialData.min_marks_pg || "",
-                max_backlogs_allowed: initialData.max_backlogs_allowed || "",
-                gap_years_allowed: initialData.gap_years_allowed || "",
-                offer_type: initialData.offer_type || "",
-                joining_date: initialData.joining_date || "",
-                bond_details: initialData.bond_details || "",
-                selection_rounds: initialData.selection_rounds || "",
-                benefits: initialData.benefits || "",
-                preferred_skills: initialData.preferred_skills || "",
-                preferred_locations: initialData.preferred_locations || "",
+                name: initialData.name || null,
+                description: initialData.description || null,
+                contact_email: initialData.contact_email || null,
+                contact_phone: initialData.contact_phone || null,
+                ctc_offered: initialData.ctc_offered || null,
+                interview_process: initialData.interview_process || null,
+                mode_of_interview: initialData.mode_of_interview || null,
+                platforms: initialData.platforms || null,
+                website_url: initialData.website_url || null,
+                industry_type: initialData.industry_type || null,
+                company_size: initialData.company_size || null,
+                headquarters_location: initialData.headquarters_location || null,
+                establishment_year: initialData.establishment_year || null,
+                min_qualification: initialData.min_qualification || null,
+                min_marks_10th: initialData.min_marks_10th || null,
+                min_marks_12th: initialData.min_marks_12th || null,
+                min_marks_ug: initialData.min_marks_ug || null,
+                min_marks_pg: initialData.min_marks_pg || null,
+                max_backlogs_allowed: initialData.max_backlogs_allowed || null,
+                gap_years_allowed: initialData.gap_years_allowed || null,
+                offer_type: initialData.offer_type || null,
+                joining_date: initialData.joining_date || null,
+                bond_details: initialData.bond_details || null,
+                selection_rounds: initialData.selection_rounds || null,
+                benefits: initialData.benefits || null,
+                preferred_skills: initialData.preferred_skills || null,
+                preferred_locations: initialData.preferred_locations || null,
             });
         }
     }, [initialData]);
@@ -84,7 +84,7 @@ function CompanyDetails() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(updateCompanyDetails({ id: userDetails?.companyId, registerData : form })).unwrap().then((res) => {
+        dispatch(updateCompanyDetails({ id: userDetails?.companyId, registerData: form })).unwrap().then((res) => {
             message.success('Company details updated successfully')
         }).catch((error) => {
             message.error(error?.message ?? 'Failed to update company details')
@@ -101,7 +101,7 @@ function CompanyDetails() {
                 </div>
                 <div style={{ flex: '1 1 200px', minWidth: 250 }}>
                     <label>Description:</label>
-                    <input name="description" value={form.description} onChange={handleChange}  />
+                    <input name="description" value={form.description} onChange={handleChange} />
                 </div>
                 <div style={{ flex: '1 1 200px', minWidth: 250 }}>
                     <label>Contact Email:</label>
@@ -113,7 +113,7 @@ function CompanyDetails() {
                 </div>
                 <div style={{ flex: '1 1 200px', minWidth: 250 }}>
                     <label>CTC Offered:</label>
-                    <input name="ctc_offered" type="number" value={form.ctc_offered} onChange={handleChange}  />
+                    <input name="ctc_offered" type="number" value={form.ctc_offered} onChange={handleChange} />
                 </div>
                 <div style={{ flex: '1 1 200px', minWidth: 250 }}>
                     <label>Interview Process:</label>
@@ -129,11 +129,11 @@ function CompanyDetails() {
                 </div>
                 <div style={{ flex: '1 1 200px', minWidth: 250 }}>
                     <label>Website URL:</label>
-                    <input name="website_url" type="url" value={form.website_url} onChange={handleChange}  />
+                    <input name="website_url" type="url" value={form.website_url} onChange={handleChange} />
                 </div>
                 <div style={{ flex: '1 1 200px', minWidth: 250 }}>
                     <label>Industry Type:</label>
-                    <input name="industry_type" value={form.industry_type} onChange={handleChange}  />
+                    <input name="industry_type" value={form.industry_type} onChange={handleChange} />
                 </div>
                 <div style={{ flex: '1 1 200px', minWidth: 250 }}>
                     <label>Company Size:</label>
@@ -177,7 +177,18 @@ function CompanyDetails() {
                 </div>
                 <div style={{ flex: '1 1 200px', minWidth: 250 }}>
                     <label>Offer Type:</label>
-                    <input name="offer_type" value={form.offer_type} onChange={handleChange} required />
+                    <Select
+                        name="offer_type"
+                        placeholder="Select Offer Type"
+                        value={form.offer_type || null}
+                        onChange={value => setForm(prev => ({ ...prev, offer_type: value }))}
+                        options={[
+                            { value: "Internship", label: "Internship" },
+                            { value: "Full-Time", label: "Full-Time" },
+                            { value: "Intern+PPO", label: "Intern+PPO" }
+                        ]}
+                        style={{ width: "100%" }}
+                    />
                 </div>
                 <div style={{ flex: '1 1 200px', minWidth: 250 }}>
                     <label>Joining Date:</label>
