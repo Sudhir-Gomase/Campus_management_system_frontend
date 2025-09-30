@@ -28,9 +28,13 @@ const Sidebar = () => {
     "/student-form": "2",
     "/student-ongoing": "3",
   };
+  const companyKeyMap = {
+    "/company-dashboard": "1",
+    "/company-details": "2",
+  };
 
   // Pick the right key map
-  const keyMap = roleType === "admin" ? adminKeyMap : studentKeyMap;
+  const keyMap = roleType === "admin" ? adminKeyMap : roleType === "company" ? companyKeyMap : studentKeyMap;
   // Find the key for the current path, fallback to "1"
   const selectedKey = keyMap[location.pathname] || "1";
 
@@ -74,6 +78,16 @@ const Sidebar = () => {
           </Menu.Item>
           <Menu.Item key="3" icon={<CopyOutlined />}>
             <Link to="/student-ongoing">Ongoing</Link>
+          </Menu.Item>
+        </Menu>
+      }
+      {roleType === 'company' &&
+        <Menu mode="inline" selectedKeys={[selectedKey]}>
+          <Menu.Item key="1" icon={<HomeOutlined />}>
+            <Link to="/company-dashbaord">Dashboard</Link>
+          </Menu.Item>
+          <Menu.Item key="2" icon={<UserOutlined />}>
+            <Link to="/company-details">Details</Link>
           </Menu.Item>
         </Menu>
       }

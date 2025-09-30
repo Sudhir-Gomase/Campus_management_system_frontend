@@ -7,6 +7,8 @@ import StudentDashboard from "./StudentDashboard";
 import UpdateStudentForm from "./UpdateStudentForm";
 import StudentOngoingProcess from "./StudentOngoingProcess";
 import Notification from "./Notification";
+import CompanyDashboard from "./CompanyDashboard";
+import CompanyDetails from "./CompanyDetails";
 
 export const routes = [
   {
@@ -70,6 +72,22 @@ export const routes = [
     element:
       <PrivateRoute>
         <Notification />
+      </PrivateRoute>
+    ,
+  },
+  {
+    path: "/company-dashbaord",
+    element:
+      <PrivateRoute>
+        <CompanyDashboard />
+      </PrivateRoute>
+    ,
+  },
+  {
+    path: "/company-details",
+    element:
+      <PrivateRoute>
+        <CompanyDetails />
       </PrivateRoute>
     ,
   },

@@ -1,15 +1,23 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/login.css";
-import { message } from "antd";
+import { Input, message, Modal } from "antd";
 import { useDispatch } from "react-redux";
-import { loginRequest } from "../redux/slices/dataSlice";
+import { companyRegistration, loginRequest } from "../redux/slices/dataSlice";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [selectedType, setSelectedType] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
+  const [registerData, setRegisterData] = useState({
+    name: "",
+    contact_email: "",
+    contact_phone: "",
+    offer_type: "",
+    description: "",
+  });
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -18,7 +26,14 @@ function Login() {
       return message.error('Login failed')
     }
     e.preventDefault();
-    dispatch(loginRequest({ email, password, type: selectedType })).unwrap().then((res) => {
+    const requestedData = {
+      email, password, type: selectedType
+    }
+    if (selectedType === 'company') {
+      requestedData['username'] = email
+      delete requestedData['email']
+    }
+    dispatch(loginRequest(requestedData)).unwrap().then((res) => {
       message.success('Login success')
       localStorage.setItem('accessToken', res?.token)
       localStorage.setItem('userName', res?.name)
@@ -26,12 +41,39 @@ function Login() {
       localStorage.setItem('loginType', res?.role)
       if (res?.role === 'student') {
         navigate('/student-dashboard')
-      } else {
+      } else if (res?.role === 'company') {
+        navigate('/company-dashbaord')
+      } else if (res?.role === 'admin') {
         navigate('/')
       }
     }).catch((error) => {
       message.error(error?.message ?? 'Failed to Login')
     })
+  };
+
+  const handleRegisterChange = (e) => {
+    const { name, value } = e.target;
+    setRegisterData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleRegisterSubmit = async () => {
+    // Replace with your registration API call
+    try {
+      await dispatch(companyRegistration(registerData)).unwrap().then((res) => {
+        message.success('Admin will get back to you soon after verification.');
+        setShowRegister(false);
+        setRegisterData({
+          name: "",
+          contact_email: "",
+          contact_phone: "",
+          offer_type: "",
+          description: "",
+        });
+      });
+      // await dispatch(registerCompany(registerData)).unwrap();
+    } catch (err) {
+      message.error(err?.message || "Registration failed");
+    }
   };
 
   const cardData = [
@@ -77,7 +119,7 @@ function Login() {
           <form onSubmit={handleSubmit}>
             <div className="input-group">
               <input
-                type="email"
+                type="name"
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -110,10 +152,67 @@ function Login() {
                 {showPassword ? "🙈" : "👁️"}
               </span>
             </div>
-
             <button type="submit" className="btn">Login</button>
           </form>
         )}
+        {selectedType === "company" && (
+          <div style={{ marginTop: 16, textAlign: "center" }}>
+            <span
+              style={{ color: "#4b95a2", cursor: "pointer", fontWeight: 500 }}
+              onClick={() => setShowRegister(true)}
+            >
+              Register your company
+            </span>
+          </div>
+        )}
+        <Modal
+          open={showRegister}
+          onCancel={() => setShowRegister(false)}
+          title="Register Company"
+          footer={null}
+        >
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <Input
+              name="name"
+              placeholder="Company Name"
+              value={registerData.name}
+              onChange={handleRegisterChange}
+            />
+            <Input
+              name="contact_email"
+              placeholder="Contact Email"
+              value={registerData.contact_email}
+              onChange={handleRegisterChange}
+            />
+            <Input
+              name="contact_phone"
+              placeholder="Contact Phone"
+              value={registerData.contact_phone}
+              onChange={handleRegisterChange}
+            />
+            <Input
+              name="offer_type"
+              placeholder="Offer Type"
+              value={registerData.offer_type}
+              onChange={handleRegisterChange}
+            />
+            <Input.TextArea
+              name="description"
+              placeholder="Description"
+              value={registerData.description}
+              onChange={handleRegisterChange}
+              rows={3}
+            />
+            <button
+              className="btn"
+              style={{ marginTop: 8 }}
+              onClick={handleRegisterSubmit}
+              type="button"
+            >
+              Register
+            </button>
+          </div>
+        </Modal>
 
         {/* <p className="signup-link">
           Don’t have an account? <a href="/signup">Sign Up</a>

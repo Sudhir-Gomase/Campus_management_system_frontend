@@ -9,7 +9,9 @@ function Company() {
   const [selectedStatus, setSelectedStatus] = useState('approved')
   const [companyId, setCompanyId] = useState(null)
   const [approvedValue, setApprovedValue] = useState(null)
+  const [modalText, setModalText] = useState(null)
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const [isModalCredentialsVisible, setIsModalCredentialsVisible] = useState(false)
   const { overAllCompanyListData } = useSelector((state) => state?.dataSlice);
 
   useEffect(() => {
@@ -83,9 +85,14 @@ function Company() {
 
   const handleEdit = () => {
     dispatch(updateStatusOfCompany(`/${companyId}/${approvedValue}`)).unwrap().then((res) => {
+      console.log('res=============', res)
+      setModalText(res?.credentials)
       message.success('Status changed')
       setApprovedValue(null)
       setIsModalVisible(false)
+      if (res?.credentials) {
+        setIsModalCredentialsVisible(true)
+      }
       let queryParams = ''
       if (selectedStatus === 'approved') {
         queryParams += '?is_approved=true'
@@ -136,6 +143,25 @@ function Company() {
         <div className="flex" style={{ gap: '10px', justifyContent: 'end' }}>
           <button style={{ padding: '7px 16px', border: '1px solid #4b95a2', color: ' #4b95a2', borderRadius: 5, backgroundColor: 'transparent', cursor: 'pointer' }} onClick={() => setIsModalVisible(false)}>Cancel</button>
           <button style={{ padding: '7px 16px', background: 'linear-gradient(135deg, #66cbea, #4b95a2)', border: 0, color: ' white', borderRadius: 5, cursor: 'pointer' }} onClick={handleEdit}>Submit</button>
+        </div>
+      </Modal>
+
+      <Modal
+        open={isModalCredentialsVisible}
+        onCancel={() => {
+          setIsModalCredentialsVisible(false);
+        }}
+        footer={null}
+        title={'Credentials'}
+      >
+        <div style={{ color: "#333", fontSize: 15, marginBottom: 4 }}>
+          Username: {modalText?.username}
+        </div>
+        <div style={{ color: "#333", fontSize: 15, marginBottom: 4 }}>
+          Password: {modalText?.password}
+        </div>
+        <div className="flex" style={{ gap: '10px', justifyContent: 'end' }}>
+          <button style={{ padding: '7px 16px', background: 'linear-gradient(135deg, #66cbea, #4b95a2)', border: 0, color: ' white', borderRadius: 5, cursor: 'pointer' }} onClick={() => setIsModalCredentialsVisible(false)}>Close</button>
         </div>
       </Modal>
     </div>

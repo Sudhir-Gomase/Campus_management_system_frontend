@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { message, Select, Table } from "antd";
+import { message, Modal, Select, Table } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { studentOnGoingProcess } from "../redux/slices/dataSlice";
+import { clearNotificationById, getNotificationById, studentOnGoingProcess } from "../redux/slices/dataSlice";
 
 function StudentOngoingProcess() {
     const dispatch = useDispatch()
     const [selectedStatus, setSelectedStatus] = useState('applied')
-    const { studentOnGoingProcessData } = useSelector((state) => state?.dataSlice);
+    const { studentOnGoingProcessData, getNotificationDataId } = useSelector((state) => state?.dataSlice);
 
     const userDetails = JSON.parse(localStorage.getItem("userdetails"));
+    const [modalVisible, setModalVisible] = useState(false);
+        const [selectedCompany, setSelectedCompany] = useState(null);
 
     useEffect(() => {
         dispatch(studentOnGoingProcess(userDetails?.studentId))
@@ -63,7 +65,33 @@ function StudentOngoingProcess() {
                 else if (record === "selected") color = "#52c41a";
                 else if (record === "rejected") color = "#f5222d";
                 return (
-                    <div style={{ color, fontWeight: 500 }}>{record}</div>
+                    <div style={{ color, fontWeight: 500, textTransform: 'capitalize'  }}>{record}</div>
+                );
+            }
+        },
+        {
+            title: "Action",
+            render: (record) => {
+                return (
+                    <button
+                            style={{
+                                background: "#4b95a2",
+                                color: "#fff",
+                                border: "none",
+                                borderRadius: 5,
+                                padding: "8px 16px",
+                                cursor: "pointer",
+                                marginLeft: 16,
+                                fontWeight: 500
+                            }}
+                            onClick={() => {
+                                dispatch(getNotificationById({ id: userDetails?.studentId, companyId: record?.company_id }));
+                                setSelectedCompany(record.company_name);
+                                setModalVisible(true);
+                            }}
+                        >
+                            View Details
+                        </button>
                 );
             }
         },
@@ -98,6 +126,33 @@ function StudentOngoingProcess() {
                 </div>
                 <Table dataSource={studentOnGoingProcessData?.filter((item)=> item?.placement_status === selectedStatus)} columns={columns} pagination={{ pageSize: 5 }} />
             </div>
+            <Modal
+                open={modalVisible}
+                onCancel={() => { setModalVisible(false); dispatch(clearNotificationById()) }}
+                footer={null}
+                title={selectedCompany ? `Notifications from ${selectedCompany}` : ""}
+            >
+                {getNotificationDataId.length === 0 ? (
+                    <div style={{ color: "#888", textAlign: "center" }}>No notifications for this company.</div>
+                ) : (
+                    getNotificationDataId.map((item) => (
+                        <div
+                            key={item.notification_id}
+                            style={{
+                                borderBottom: "1px solid #eee",
+                                padding: "12px 0"
+                            }}
+                        >
+                            <div style={{ color: "#333", fontSize: 15, marginBottom: 4 }}>
+                                {item.message_body}
+                            </div>
+                            <div style={{ color: "#aaa", fontSize: 12 }}>
+                                {new Date(item.updated_at).toLocaleString()}
+                            </div>
+                        </div>
+                    ))
+                )}
+            </Modal>
         </div>
     );
 }

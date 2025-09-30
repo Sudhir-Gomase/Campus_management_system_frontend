@@ -67,6 +67,17 @@ function Student() {
       title: "Placement Status",
       dataIndex: "placement_status",
       key: "placement_status",
+      render: (record) => {
+        let color = "#4b95a2";
+        if (record === "applied") color = "#1890ff";
+        else if (record === "shortlisted") color = "#faad14";
+        else if (record === "interviewed") color = "#13c2c2";
+        else if (record === "selected") color = "#52c41a";
+        else if (record === "rejected") color = "#f5222d";
+        return (
+          <div style={{ color, fontWeight: 500, textTransform: 'capitalize' }}>{record}</div>
+        );
+      }
     },
     {
       title: "Action",

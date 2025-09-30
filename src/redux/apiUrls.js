@@ -8,6 +8,7 @@ export const METHOD_TYPE = {
 export const API_ENDPOINTS = {
   adminLogin: "adminlogin",
   studentLogin: "studentlogin",
+  companyLogin: "companylogin",
   changepassword: "changepassword",
   department: "departments",
   academicyeardata: "academicyeardata",
@@ -24,5 +25,11 @@ export const API_ENDPOINTS = {
   studentapplied: "studentapplied",
   admindataupdate: "admindataupdate/",
   getnotification: "getnotification/",
+  companyIdApplications: "applications",
+  getNotficationTemplate: "notification-template?placement_status=",
+  createnotification: "createnotification",
+  companyregistration: "companyregistration",
+  getcompany: "getcompany/",
+  updatecompany: "updatecompany/",
 };
 

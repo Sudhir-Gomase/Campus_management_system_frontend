@@ -15,6 +15,9 @@ const initialState = {
   studentOnGoingProcessData: [],
   getNotificationData: [],
   getNotificationDataId: [],
+  companyIdApplicationsData: [],
+  notficationTemplateData: {},
+  getCompanyDetailsById: {},
   isLoading: false,
   error: null,
 };
@@ -312,6 +315,109 @@ export const adminDataUpdate = createAsyncThunk("campus/adminDataUpdate", async 
 }
 );
 
+export const companyIdApplications = createAsyncThunk("campus/companyIdApplications", async ({ id, status }) => {
+  try {
+    const data = {
+      method: METHOD_TYPE.get,
+      url: `company/${id}/${API_ENDPOINTS.companyIdApplications}?status=${status || ''}`,
+    };
+    const response = await apis(data);
+    return response?.data?.data?.applications;
+  } catch (error) {
+    throw error.response?.data?.error;
+  }
+}
+);
+
+export const getNotficationTemplate = createAsyncThunk("campus/getNotficationTemplate", async (status) => {
+  try {
+    const data = {
+      method: METHOD_TYPE.get,
+      url: API_ENDPOINTS.getNotficationTemplate + status,
+    };
+    const response = await apis(data);
+    return response?.data?.data;
+  } catch (error) {
+    throw error.response?.data?.error;
+  }
+}
+);
+
+export const createnotification = createAsyncThunk("campus/createnotification", async (requestedData) => {
+  try {
+    const data = {
+      method: METHOD_TYPE.post,
+      url: API_ENDPOINTS.createnotification,
+      data: requestedData
+    };
+    const response = await apis(data);
+    return response?.data?.data;
+  } catch (error) {
+    throw error.response?.data?.error;
+  }
+}
+);
+
+
+export const updateStudentStatus = createAsyncThunk("campus/updateStudentStatus", async ({ id, studentId, status }) => {
+  try {
+    const data = {
+      method: METHOD_TYPE.put,
+      url: `company/${id}/application/${studentId}/status`,
+      data: { status }
+    };
+    const response = await apis(data);
+    return response?.data?.data?.applications;
+  } catch (error) {
+    throw error.response?.data?.error;
+  }
+}
+);
+
+export const companyRegistration = createAsyncThunk("campus/companyRegistration", async (registerData) => {
+  try {
+    const data = {
+      method: METHOD_TYPE.post,
+      url: API_ENDPOINTS.companyregistration,
+      data: registerData
+    };
+    const response = await apis(data);
+    return response?.data?.data?.applications;
+  } catch (error) {
+    throw error.response?.data?.error;
+  }
+}
+);
+
+export const getCompanyDetails = createAsyncThunk("campus/getCompanyDetails", async (id) => {
+  try {
+    const data = {
+      method: METHOD_TYPE.get,
+      url: API_ENDPOINTS.getcompany + id,
+    };
+    const response = await apis(data);
+    return response?.data?.data;
+  } catch (error) {
+    throw error.response?.data?.error;
+  }
+}
+);
+
+export const updateCompanyDetails = createAsyncThunk("campus/updateCompanyDetails", async ({id, registerData}) => {
+  console.log('registerData=================', registerData)
+  try {
+    const data = {
+      method: METHOD_TYPE.put,
+      url: API_ENDPOINTS.updatecompany + id,
+      data: registerData
+    };
+    const response = await apis(data);
+    return response?.data?.data;
+  } catch (error) {
+    throw error.response?.data?.error;
+  }
+}
+);
 
 const dataSlice = createSlice({
   name: "dataSlice",
@@ -366,6 +472,15 @@ const dataSlice = createSlice({
       .addCase(getNotificationById.fulfilled, (state, action) => {
         state.getNotificationDataId = action.payload;
       })
+      .addCase(companyIdApplications.fulfilled, (state, action) => {
+        state.companyIdApplicationsData = action.payload;
+      })
+      .addCase(getNotficationTemplate.fulfilled, (state, action) => {
+        state.notficationTemplateData = action.payload;
+      })
+      .addCase(getCompanyDetails.fulfilled, (state, action) => {
+        state.getCompanyDetailsById = action.payload;
+      })
       .addMatcher(
         (action) =>
           action.type === loginRequest.pending.type ||
@@ -418,7 +533,25 @@ const dataSlice = createSlice({
           action.type === getNotification.rejected.type ||
           action.type === getNotificationById.pending.type ||
           action.type === getNotificationById.fulfilled.type ||
-          action.type === getNotificationById.rejected.type,
+          action.type === getNotificationById.rejected.type ||
+          action.type === companyIdApplications.pending.type ||
+          action.type === companyIdApplications.fulfilled.type ||
+          action.type === companyIdApplications.rejected.type ||
+          action.type === getNotficationTemplate.pending.type ||
+          action.type === getNotficationTemplate.fulfilled.type ||
+          action.type === getNotficationTemplate.rejected.type ||
+          action.type === createnotification.pending.type ||
+          action.type === createnotification.fulfilled.type ||
+          action.type === createnotification.rejected.type ||
+          action.type === companyRegistration.pending.type ||
+          action.type === companyRegistration.fulfilled.type ||
+          action.type === companyRegistration.rejected.type ||
+          action.type === getCompanyDetails.pending.type ||
+          action.type === getCompanyDetails.fulfilled.type ||
+          action.type === getCompanyDetails.rejected.type ||
+          action.type === updateCompanyDetails.pending.type ||
+          action.type === updateCompanyDetails.fulfilled.type ||
+          action.type === updateCompanyDetails.rejected.type,
         handleLoading
       )
   },
